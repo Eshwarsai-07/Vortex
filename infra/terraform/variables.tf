@@ -18,7 +18,8 @@ variable "instance_type" {
 
 variable "key_name" {
   type        = string
-  description = "Existing SSH key pair name in AWS"
+  default     = ""
+  description = "Existing SSH key pair name in AWS (optional)"
 }
 
 variable "vpc_cidr" {
