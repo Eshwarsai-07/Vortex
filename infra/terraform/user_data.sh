@@ -25,7 +25,11 @@ apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 systemctl enable docker
 systemctl start docker
 
-# Add ubuntu user to docker group
-usermod -aG docker ubuntu
+# Configure SSH Authorized Keys for Ubuntu user
+mkdir -p /home/ubuntu/.ssh
+chmod 700 /home/ubuntu/.ssh
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPh43g/zlagQQPFQBPK88D36g6oSpw/UkJVgacaCZIoO eshwar@qcecuring" >> /home/ubuntu/.ssh/authorized_keys
+chmod 600 /home/ubuntu/.ssh/authorized_keys
+chown -R ubuntu:ubuntu /home/ubuntu/.ssh
 
 echo "Vortex Server Bootstrap Completed Successfully!"
