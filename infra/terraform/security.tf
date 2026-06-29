@@ -39,6 +39,14 @@ resource "aws_security_group" "vortex_sg" {
     description = "Backend API direct access"
   }
 
+  ingress {
+    from_port   = 5005
+    to_port     = 5005
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Backend API host mapped access"
+  }
+
   # Redpanda Kafka Console UI
   ingress {
     from_port   = 8080
