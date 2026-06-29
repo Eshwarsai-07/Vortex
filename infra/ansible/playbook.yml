@@ -1,5 +1,5 @@
 ---
-- hosts: kafka_node
+- hosts: all
   become: true
   vars:
     project_dir: "/home/ubuntu/Vortex"
