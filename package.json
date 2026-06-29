@@ -1,0 +1,13 @@
+{
+    "name": "vortex",
+    "version": "1.0.0",
+    "description": "Cloud-native static website deployment service inspired by Vercel",
+    "license": "MIT",
+    "scripts": {
+        "start-frontend": "cd frontend && npm run dev",
+        "start-backend": "cd backend && npm run dev"
+    },
+    "devDependencies": {
+        "npm-run-all": "^4.1.5"
+    }
+}

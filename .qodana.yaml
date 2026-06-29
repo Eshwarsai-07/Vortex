@@ -1,0 +1,12 @@
+version: "1.0"
+
+profile:
+  name: qodana.recommended
+
+linter: jetbrains/qodana-js:2024.3
+
+fixesStrategy: apply
+
+bootstrap: |
+  cd frontend
+  npm ci

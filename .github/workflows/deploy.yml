@@ -1,0 +1,43 @@
+name: Continuous Deployment (CD)
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  deploy-to-ec2:
+    name: Deploy to AWS EC2 Host
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            echo "Starting Vortex EC2 Deployment..."
+            
+            # Navigate to application workspace directory
+            if [ ! -d "~/Vortex" ]; then
+              git clone https://github.com/${{ github.repository }}.git ~/Vortex
+            fi
+            
+            cd ~/Vortex
+            git fetch --all
+            git reset --hard origin/main
+            
+            # Run container deployments
+            cd services
+            docker compose down --remove-orphans || true
+            docker compose up -d --build
+            
+            # Verify Deployment Health
+            echo "Waiting for services to become healthy..."
+            sleep 20
+            curl -f http://localhost:5000/health || (echo "Health check failed!" && exit 1)
+            echo "Vortex Deployment Successfully Verified!"
