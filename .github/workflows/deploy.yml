@@ -52,5 +52,5 @@ jobs:
             # Verify Deployment Health
             echo "Waiting for services to become healthy..."
             sleep 20
-            curl -f http://localhost:5000/health || (echo "Health check failed!" && exit 1)
+            curl -f http://localhost:5005/health || curl -f http://localhost/api/health || (echo "Health check failed!" && exit 1)
             echo "Vortex Deployment Successfully Verified!"
