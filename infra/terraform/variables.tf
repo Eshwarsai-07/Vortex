@@ -12,8 +12,8 @@ variable "environment" {
 
 variable "instance_type" {
   type        = string
-  default     = "t3.nano"
-  description = "EC2 Instance hardware type"
+  default     = "t4g.micro"
+  description = "EC2 Instance hardware type (Free Tier eligible Graviton2)"
 }
 
 variable "key_name" {

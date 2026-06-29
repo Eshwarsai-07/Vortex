@@ -1,5 +1,5 @@
 aws_region   = "eu-north-1"
 environment  = "production"
-instance_type = "t3.nano"
+instance_type = "t4g.micro"
 key_name      = "my-aws-ssh-key"
 vpc_cidr      = "10.0.0.0/16"
