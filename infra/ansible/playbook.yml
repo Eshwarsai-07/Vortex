@@ -2,7 +2,7 @@
 - hosts: kafka_node
   become: true
   vars:
-    project_dir: "/home/ubuntu/rohithr018-vortex"
+    project_dir: "/home/ubuntu/Vortex"
 
   tasks:
     - name: Install dependencies
@@ -22,7 +22,7 @@
 
     - name: Clone project repo
       git:
-        repo: "https://github.com/rohithr018/rohithr018-vortex.git"
+        repo: "https://github.com/Eshwarsai-07/Vortex.git"
         dest: "{{ project_dir }}"
         version: "main"
 
