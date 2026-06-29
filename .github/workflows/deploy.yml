@@ -23,11 +23,11 @@ jobs:
             echo "Starting Vortex EC2 Deployment..."
             
             # Navigate to application workspace directory
-            if [ ! -d "~/Vortex" ]; then
-              git clone https://github.com/${{ github.repository }}.git ~/Vortex
+            if [ ! -d "$HOME/Vortex" ]; then
+              git clone https://github.com/${{ github.repository }}.git $HOME/Vortex
             fi
             
-            cd ~/Vortex
+            cd $HOME/Vortex
             git fetch --all
             git reset --hard origin/main
 
