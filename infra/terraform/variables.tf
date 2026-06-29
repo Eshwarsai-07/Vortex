@@ -12,8 +12,8 @@ variable "environment" {
 
 variable "instance_type" {
   type        = string
-  default     = "t3.medium"
-  description = "EC2 Instance hardware type"
+  default     = "t3.micro"
+  description = "EC2 Instance hardware type (Free Tier eligible)"
 }
 
 variable "key_name" {
