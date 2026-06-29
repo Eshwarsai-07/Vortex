@@ -1,6 +1,6 @@
 variable "aws_region" {
   type        = string
-  default     = "eu-north-1"
+  default     = "us-east-1"
   description = "AWS Region for infrastructure provisioning"
 }
 
@@ -12,8 +12,8 @@ variable "environment" {
 
 variable "instance_type" {
   type        = string
-  default     = "t4g.micro"
-  description = "EC2 Instance hardware type (Free Tier eligible Graviton2)"
+  default     = "t2.micro"
+  description = "EC2 Instance hardware type (Free Tier eligible)"
 }
 
 variable "key_name" {

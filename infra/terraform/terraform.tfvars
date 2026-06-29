@@ -1,5 +1,5 @@
-aws_region   = "eu-north-1"
+aws_region   = "us-east-1"
 environment  = "production"
-instance_type = "t4g.micro"
+instance_type = "t2.micro"
 key_name      = "my-aws-ssh-key"
 vpc_cidr      = "10.0.0.0/16"
