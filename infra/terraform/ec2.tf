@@ -13,9 +13,14 @@ data "aws_ami" "ubuntu" {
   }
 }
 
+resource "tls_private_key" "deploy_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 resource "aws_key_pair" "vortex_key" {
   key_name   = "vortex-deploy-key"
-  public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPh43g/zlagQQPFQBPK88D36g6oSpw/UkJVgacaCZIoO eshwar@qcecuring"
+  public_key = tls_private_key.deploy_key.public_key_openssh
 }
 
 resource "aws_instance" "vortex_server" {

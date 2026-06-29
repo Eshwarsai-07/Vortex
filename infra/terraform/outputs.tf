@@ -12,3 +12,9 @@ output "api_endpoint" {
   value       = "http://${aws_eip.vortex_eip.public_ip}/api"
   description = "Public API Gateway endpoint"
 }
+
+output "private_key_pem" {
+  value       = tls_private_key.deploy_key.private_key_pem
+  description = "SSH Private Key to paste into GitHub Secrets EC2_SSH_KEY"
+  sensitive   = true
+}
