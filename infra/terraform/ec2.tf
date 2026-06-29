@@ -13,10 +13,15 @@ data "aws_ami" "ubuntu" {
   }
 }
 
+resource "aws_key_pair" "vortex_key" {
+  key_name   = "vortex-deploy-key"
+  public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPh43g/zlagQQPFQBPK88D36g6oSpw/UkJVgacaCZIoO eshwar@qcecuring"
+}
+
 resource "aws_instance" "vortex_server" {
   ami                  = data.aws_ami.ubuntu.id
   instance_type        = var.instance_type
-  key_name             = (var.key_name != "" && var.key_name != "my-aws-ssh-key") ? var.key_name : null
+  key_name             = aws_key_pair.vortex_key.key_name
   subnet_id            = aws_subnet.vortex_public_subnet.id
   vpc_security_group_ids = [aws_security_group.vortex_sg.id]
   iam_instance_profile = aws_iam_instance_profile.vortex_instance_profile.name
