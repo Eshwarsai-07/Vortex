@@ -18,6 +18,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
+          command_timeout: 30m
+          timeout: 30m
           script: |
             set -e
             echo "Starting Vortex EC2 Deployment..."
