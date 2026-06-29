@@ -30,11 +30,22 @@ jobs:
             cd ~/Vortex
             git fetch --all
             git reset --hard origin/main
+
+            # Create default environment file if missing
+            if [ ! -f ".env" ]; then
+              echo "PORT=5000" > .env
+              echo "MONGO_URI=mongodb://mongodb:27017/vortex" >> .env
+              echo "KAFKA_BROKER=kafka-1:19092" >> .env
+              echo "KAFKA_TOPIC=build-logs" >> .env
+              echo "CLICKHOUSE_HOST=clickhouse" >> .env
+              echo "S3_BUCKET=eshwar-vortex-storage" >> .env
+              echo "AWS_REGION=eu-north-1" >> .env
+            fi
             
-            # Run container deployments
+            # Run container deployments with sudo
             cd services
-            docker compose down --remove-orphans || true
-            docker compose up -d --build
+            sudo docker compose down --remove-orphans || true
+            sudo docker compose up -d --build
             
             # Verify Deployment Health
             echo "Waiting for services to become healthy..."
