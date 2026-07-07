@@ -33,8 +33,6 @@ For detailed architecture, workflows, and implementation details, check out the 
 - [Chapter 6: Service Orchestration](./docs/06_service_orchestration_.md)
 - [Chapter 7: Persistent Data Storage](./docs/07_persistent_data_storage_.md)
 - [Chapter 8: System Architecture & Topology](./docs/08_architecture.md)
-- [Chapter 9: CI/CD Automation Pipeline](./docs/09_cicd.md)
-- [Chapter 10: Infrastructure Provisioning with Terraform](./docs/10_terraform.md)
 
 ---
 

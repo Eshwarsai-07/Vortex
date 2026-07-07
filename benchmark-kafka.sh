@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run inside Ansible after cluster start
+# Run after local container cluster start
 BROKERS="kafka-1:19092,kafka-2:19092,kafka-3:19092"
 TOPIC="vortex-benchmark"
 RECORD_SIZE=100
