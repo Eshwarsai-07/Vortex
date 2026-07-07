@@ -62,8 +62,8 @@ jobs:
           HEALTH_URL="http://${{ secrets.EC2_HOST }}/health"
           echo "Target Health Check URL: $HEALTH_URL"
           
-          # Retry loop parameters: 6 attempts, 15-second delay between checks
-          MAX_RETRIES=6
+          # Retry loop parameters: 12 attempts, 15-second delay between checks (total 3 minutes)
+          MAX_RETRIES=12
           DELAY=15
           ATTEMPT=1
           
@@ -94,3 +94,37 @@ jobs:
           exit 1
         # Queries the edge Nginx reverse proxy endpoint on the EC2 host. If it responds with HTTP 200 OK within
         # the retry limits, the deploy completes. If it times out or returns error codes, the job fails.
+
+      # ==========================================
+      # 5. DIAGNOSTICS & TROUBLESHOOTING (ON FAILURE)
+      # ==========================================
+      - name: Collect Remote Debugging Logs
+        if: failure()
+        run: |
+          echo "=================================================================="
+          echo "🚨 DEPLOYMENT FAILED! GATHERING REMOTE EC2 DIAGNOSTIC LOGS..."
+          echo "=================================================================="
+          
+          ssh -i ~/.ssh/vortex-keypair.pem -o ConnectTimeout=15 ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
+            echo '=== DOCKER CONTAINER LIST (docker ps -a) ==='
+            docker ps -a
+            echo '============================================'
+            
+            echo '=== DOCKER COMPOSE SERVICES (docker compose ps) ==='
+            docker compose -f /home/ubuntu/vortex/services/docker-compose.yml ps
+            echo '==================================================='
+            
+            echo '=== DOCKER COMPOSE LOGS ==='
+            docker compose -f /home/ubuntu/vortex/services/docker-compose.yml logs --tail=100
+            echo '==========================='
+            
+            echo '=== VORTEX APPLICATION CONTAINER LOGS (docker logs vortex-app) ==='
+            docker logs vortex-app --tail=100
+            echo '=================================================================='
+            
+            echo '=== VORTEX NGINX PROXY CONTAINER LOGS (docker logs vortex-nginx) ==='
+            docker logs vortex-nginx --tail=100
+            echo '===================================================================='
+          "
+        # Connects to the EC2 host and pulls container lists, composition health statuses, and stdout/stderr
+        # logs from both application and proxy containers to make troubleshooting easy.

@@ -10,4 +10,9 @@
     cmd: docker compose -f {{ docker_compose_file }} up -d --build
   register: compose_output
   changed_when: "'Started' in compose_output.stderr or 'Created' in compose_output.stderr or 'Recreated' in compose_output.stderr"
+
+- name: Verify Docker Compose completed successfully
+  ansible.builtin.assert:
+    that: compose_output.rc == 0
+    fail_msg: "Docker Compose failed to start services. Exit code: {{ compose_output.rc }}"
 ...
