@@ -1,0 +1,96 @@
+name: Vortex Continuous Deployment
+
+# Trigger controls: Run automatically when code is pushed/merged to main, or manually via UI
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Backend to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      # ==========================================
+      # 1. INITIAL SETUP
+      # ==========================================
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        # Pulls the repository code onto the runner workspace.
+
+      # ==========================================
+      # 2. SSH KEYS CONFIGURATION
+      # ==========================================
+      - name: Setup SSH Directory & Key File
+        run: |
+          echo "⏳ Setting up local SSH directory and importing private key..."
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/vortex-keypair.pem
+          chmod 600 ~/.ssh/vortex-keypair.pem
+          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+          echo "✅ SSH directory setup completed and keys successfully imported."
+        # Creates the SSH directory, writes the private key secret to vortex-keypair.pem (used in inventory.ini),
+        # updates file permissions to be read-only by user (required by SSH), and pre-registers the EC2 host key
+        # to prevent connection verification prompts from locking up the runner.
+
+      - name: Verify SSH Connection
+        run: |
+          echo "⏳ Verifying SSH connectivity to host ${{ secrets.EC2_HOST }}..."
+          ssh -i ~/.ssh/vortex-keypair.pem -o ConnectTimeout=10 ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo '✅ SSH Connection Verified Successfully! Host is online and accepting connections.'"
+        # Performs a lightweight echo command on the remote EC2 host to verify the SSH key and user credentials are valid.
+
+      # ==========================================
+      # 3. ANSIBLE DEPLOYMENT
+      # ==========================================
+      - name: Run Ansible Playbook
+        run: |
+          echo "⏳ Executing Ansible deployment playbook..."
+          ansible-playbook -i infra/ansible/inventory.ini infra/ansible/playbook.yml \
+            --extra-vars "ansible_host=${{ secrets.EC2_HOST }} ansible_user=${{ secrets.EC2_USER }}"
+          echo "✅ Ansible deployment completed successfully."
+        # Invokes the Ansible playbook to update files, generate configuration templates, build Docker containers,
+        # and restart the microservices stack. Injects the host and user dynamically from secrets to bypass hardcoded IPs.
+
+      # ==========================================
+      # 4. HEALTH CHECK VERIFICATION
+      # ==========================================
+      - name: Run Backend Health Checks
+        run: |
+          echo "⏳ Starting service health check verification loop..."
+          HEALTH_URL="http://${{ secrets.EC2_HOST }}/health"
+          echo "Target Health Check URL: $HEALTH_URL"
+          
+          # Retry loop parameters: 6 attempts, 15-second delay between checks
+          MAX_RETRIES=6
+          DELAY=15
+          ATTEMPT=1
+          
+          while [ $ATTEMPT -le $MAX_RETRIES ]; do
+            echo "🔎 Health Check Attempt $ATTEMPT of $MAX_RETRIES..."
+            
+            # Send curl request and extract HTTP status code
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 $HEALTH_URL || echo "000")
+            
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "========================================="
+              echo "✅ Deployment Successful! Health API returned HTTP 200."
+              echo "========================================="
+              exit 0
+            else
+              echo "⚠️ Attempt $ATTEMPT failed. Service returned HTTP Status: $HTTP_STATUS"
+              if [ $ATTEMPT -lt $MAX_RETRIES ]; then
+                echo "⏳ Waiting $DELAY seconds before next retry..."
+                sleep $DELAY
+              fi
+            fi
+            ATTEMPT=$((ATTEMPT + 1))
+          done
+          
+          echo "========================================="
+          echo "❌ Deployment Failed! Health Check timed out."
+          echo "========================================="
+          exit 1
+        # Queries the edge Nginx reverse proxy endpoint on the EC2 host. If it responds with HTTP 200 OK within
+        # the retry limits, the deploy completes. If it times out or returns error codes, the job fails.
