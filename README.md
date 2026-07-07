@@ -33,6 +33,6 @@ For detailed architecture, workflows, and implementation details, check out the 
 - [Chapter 6: Service Orchestration](./docs/06_service_orchestration_.md)
 - [Chapter 7: Persistent Data Storage](./docs/07_persistent_data_storage_.md)
 - [Chapter 8: System Architecture & Topology](./docs/08_architecture.md)
-
+- [Chapter 9: Infrastructure as Code & Continuous Deployment](./docs/09_infrastructure_as_code_and_continuous_deployment.md)
 ---
 

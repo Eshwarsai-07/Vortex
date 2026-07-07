@@ -150,6 +150,7 @@ services:
 
 In this chapter, we explored the complete **System Architecture & Topology** of Vortex. You learned how Nginx, Express, React, Docker, Kafka, ClickHouse, MongoDB, and AWS S3 unite into a multi-tiered ecosystem. By isolating build executions in ephemeral Docker containers and streaming logs through high-throughput pipelines, Vortex ensures enterprise-grade stability, security, and scalability.
 
+[Next Chapter: Infrastructure_as_code and continous deployment](09_infrastructure_as_code_and_continuous_deployment.md)
+
 ---
 
-<sub><sup>**References**: [[1]](https://github.com/rohithr018/Vortex/blob/main/services/docker-compose.yml), [[2]](https://github.com/rohithr018/Vortex/blob/main/nginx/nginx.conf), [[3]](https://github.com/rohithr018/Vortex/blob/main/backend/server.js)</sup></sub>
