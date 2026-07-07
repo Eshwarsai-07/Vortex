@@ -24,3 +24,26 @@ pnpm-lock.yaml
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables (all levels)
+.env
+.env.*
+**/.env
+**/.env.*
+!**/.env.j2
+!**/*.j2
+**/local.properties
+
+# Terraform files
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/crash.log
+**/*.tfvars
+**/*.tfvars.json
+
+# Private keys and certs
+**/*.pem
+**/*.key
+**/*.pub
+
