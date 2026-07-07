@@ -76,7 +76,7 @@ const Auth = () => {
         setError(null);
 
         try {
-            const { data } = await api.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, { email, password });
+            const { data } = await api.post('/api/auth/login', { email, password });
 
             dispatch(loginSuccess({ token: data.token, user: data.user }));
 
@@ -109,7 +109,7 @@ const Auth = () => {
         try {
             setLocalLoading(true);
 
-            const { data } = await api.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, { fullname, username, email, password, githubProfile });
+            const { data } = await api.post('/api/auth/register', { fullname, username, email, password, githubProfile });
 
             setSuccess(`${data.message}, Redirecting to Login`);
 

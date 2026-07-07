@@ -42,7 +42,7 @@ const Deploy = () => {
     useEffect(() => {
         const fetchBranches = async () => {
             try {
-                const response = await api.get(`${import.meta.env.VITE_API_URL}/api/github/branches/${username}/${repo}`);
+                const response = await api.get(`/api/github/branches/${username}/${repo}`);
                 const branchList = Array.isArray(response.data)
                     ? response.data
                     : Array.isArray(response.data.branches)
@@ -77,7 +77,7 @@ const Deploy = () => {
             if (isDeployed && deploymentId) {
                 try {
                     const deploymentUrl = `https://eshwar-vortex-storage.s3.eu-north-1.amazonaws.com/__outputs/${deploymentId}/index.html`;
-                    await api.post(`${import.meta.env.VITE_API_URL}/api/deploy/create`, {
+                    await api.post('/api/deploy/create', {
                         deploymentId,
                         repoName: repo,
                         branch: selectedBranch,
@@ -176,7 +176,7 @@ const Deploy = () => {
         let lastReceivedLogUUID = initialLog.log_uuid;
 
         try {
-            await api.post(`${import.meta.env.VITE_API_URL}/api/deploy/start`, {
+            await api.post('/api/deploy/start', {
                 repo,
                 branch: selectedBranch,
                 username,
@@ -190,7 +190,7 @@ const Deploy = () => {
                 if (isCompleted) return;
 
                 try {
-                    const response = await api.get(`${import.meta.env.VITE_API_URL}/api/logs/${deploymentId}`, {
+                    const response = await api.get(`/api/logs/${deploymentId}`, {
                         signal: abortControllerRef.current.signal,
                         params: {
                             since: lastReceivedLogUUID

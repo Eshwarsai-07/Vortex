@@ -11,7 +11,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchDeployments = async () => {
             try {
-                const res = await api.get(`${import.meta.env.VITE_API_URL}/api/deploy/getdeploy?user=${username}`);
+                const res = await api.get(`/api/deploy/getdeploy?user=${username}`);
                 setDeployments(res.data);
             } catch (err) {
                 console.error("Failed to fetch deployments", err);
