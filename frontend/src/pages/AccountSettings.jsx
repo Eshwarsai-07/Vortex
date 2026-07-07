@@ -28,7 +28,7 @@ const AccountSettings = () => {
             if (!username) return;
 
             try {
-                const res = await api.get(`${import.meta.env.VITE_API_URL || 'http://13.235.26.67'}/api/user/getuser/${username}`);
+                const res = await api.get(`/api/user/getuser/${username}`);
                 const data = res.data;
 
                 const newForm = {
@@ -80,7 +80,7 @@ const AccountSettings = () => {
             const { fullname, email, password } = formData;
 
             const res = await api.put(
-                `${import.meta.env.VITE_API_URL || 'http://13.235.26.67'}/api/user/updateuser/${username}`,
+                `/api/user/updateuser/${username}`,
                 { fullname, email, password }
             );
 
