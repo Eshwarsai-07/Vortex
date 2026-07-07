@@ -1,6 +1,6 @@
 ---
 - name: Restart Docker services
-  ansible.builtin.command:
+  ansible.builtin.shell:
     cmd: docker compose -f {{ docker_compose_file }} down && docker compose -f {{ docker_compose_file }} up -d
   changed_when: true
 ...
