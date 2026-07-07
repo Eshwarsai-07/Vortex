@@ -45,6 +45,9 @@ jobs:
       # 3. ANSIBLE DEPLOYMENT
       # ==========================================
       - name: Run Ansible Playbook
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           echo "⏳ Executing Ansible deployment playbook..."
           ansible-playbook -i infra/ansible/inventory.ini infra/ansible/playbook.yml \

@@ -34,4 +34,9 @@
   until: health_check.status == 200
   retries: 6
   delay: 10
+
+- name: Verify vortex-build-server image exists on host
+  ansible.builtin.command:
+    cmd: docker image inspect vortex-build-server:latest
+  changed_when: false
 ...
