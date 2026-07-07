@@ -8,6 +8,9 @@
 - name: Run Docker Deployment Tasks
   ansible.builtin.include_tasks: deploy.yml
 
+- name: Flush handlers to execute service restarts before health checks
+  ansible.builtin.meta: flush_handlers
+
 - name: Run Health Verification Tasks
   ansible.builtin.include_tasks: health.yml
 ...

@@ -1,14 +1,30 @@
 ---
-- name: Wait for services to initialize
-  ansible.builtin.pause:
-    seconds: 15
-
-- name: Check that all Docker containers are running
+- name: Wait for backend container (vortex-app) to report healthy status
   ansible.builtin.command:
-    cmd: docker compose -f {{ docker_compose_file }} ps --format json
-  register: docker_ps_json
+    cmd: "docker inspect --format='{%raw%}{{.State.Health.Status}}{%endraw%}' vortex-app"
+  register: container_health_status
+  until: container_health_status.stdout == "healthy"
+  retries: 12
+  delay: 10
   changed_when: false
-  failed_when: "'exited' in docker_ps_json.stdout or 'dead' in docker_ps_json.stdout"
+  # Loops for up to 2 minutes, checking every 10 seconds until the node container is fully initialized and healthy.
+
+- name: Run docker compose ps to view container status
+  ansible.builtin.command:
+    cmd: docker compose -f {{ docker_compose_file }} ps
+  register: docker_compose_ps_out
+  changed_when: false
+
+- name: Output container status for deployment log auditing
+  ansible.builtin.debug:
+    var: docker_compose_ps_out.stdout_lines
+
+- name: Fail if any container is not running or is unhealthy
+  ansible.builtin.assert:
+    that:
+      - "'Exit' not in docker_compose_ps_out.stdout"
+      - "'unhealthy' not in docker_compose_ps_out.stdout"
+    fail_msg: "One or more containers failed to start or are unhealthy! Status: {{ docker_compose_ps_out.stdout }}"
 
 - name: Verify backend health endpoint is online
   ansible.builtin.uri:
