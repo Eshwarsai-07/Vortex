@@ -1,0 +1,10 @@
+---
+project_name: vortex
+project_directory: "/home/ubuntu/{{ project_name }}"
+repository_url: "https://github.com/Eshwarsai-07/Vortex.git"
+repository_branch: "devops-redesign"
+docker_compose_file: "{{ project_directory }}/services/docker-compose.yml"
+backend_port: 5005
+frontend_port: 3005
+health_endpoint: "http://localhost:80/health"
+...

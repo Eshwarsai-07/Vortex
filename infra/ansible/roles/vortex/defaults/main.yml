@@ -1,0 +1,16 @@
+---
+# Sane defaults for env settings that can be overridden in group_vars or command-line parameters
+node_env: "production"
+backend_port_internal: 5000
+frontend_port_internal: 3000
+
+# Security secrets and JWT configs
+jwt_secret: "vortex_secret_jwt_key_2026"
+github_token: ""
+
+# AWS S3 Storage credentials for Vortex application upload business logic
+aws_s3_region: "eu-north-1"
+aws_access_key_id: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') | default('', true) }}"
+aws_secret_access_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') | default('', true) }}"
+s3_bucket: "eshwar-vortex-storage"
+...

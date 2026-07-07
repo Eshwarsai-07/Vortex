@@ -1,0 +1,13 @@
+---
+- name: Pull newer base images if available
+  ansible.builtin.command:
+    cmd: docker compose -f {{ docker_compose_file }} pull
+  register: pull_output
+  changed_when: "'Downloaded' in pull_output.stdout or 'Downloaded' in pull_output.stderr"
+
+- name: Run Docker Compose build and startup
+  ansible.builtin.command:
+    cmd: docker compose -f {{ docker_compose_file }} up -d --build
+  register: compose_output
+  changed_when: "'Started' in compose_output.stderr or 'Created' in compose_output.stderr or 'Recreated' in compose_output.stderr"
+...
