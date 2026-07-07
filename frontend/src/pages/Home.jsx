@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { FaSearch, FaGithub } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import api from "../services/api";
 
 const Home = () => {
     const [searchText, setSearchText] = useState("");
@@ -24,7 +25,7 @@ const Home = () => {
             setError("");
             try {
                 // Fetch user repositories
-                const reposResponse = await axios.post("/api/github/repos", {
+                const reposResponse = await api.post(`${import.meta.env.VITE_API_URL}/api/github/repos`, {
                     githubProfile: username
                 });
                 const repos = reposResponse.data;
@@ -33,8 +34,8 @@ const Home = () => {
                 // Check deployment status for all repositories
                 const statusPromises = repos.map(async (repo) => {
                     try {
-                        const res = await axios.get(
-                            `/api/deploy/get?repoName=${repo.name}&username=${username}`
+                        const res = await api.get(
+                            `${import.meta.env.VITE_API_URL}/api/deploy/get?repoName=${repo.name}&username=${username}`
                         );
                         return { repoName: repo.name, deployed: res.data.exists === true };
                     } catch (error) {

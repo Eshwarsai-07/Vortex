@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+import api from '../services/api';
 import moment from 'moment';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 
@@ -28,7 +28,7 @@ const AccountSettings = () => {
             if (!username) return;
 
             try {
-                const res = await axios.get(`/api/user/getuser/${username}`);
+                const res = await api.get(`${import.meta.env.VITE_API_URL}/api/user/getuser/${username}`);
                 const data = res.data;
 
                 const newForm = {
@@ -79,8 +79,8 @@ const AccountSettings = () => {
             setLoading(true);
             const { fullname, email, password } = formData;
 
-            const res = await axios.put(
-                `/api/user/updateuser/${username}`,
+            const res = await api.put(
+                `${import.meta.env.VITE_API_URL}/api/user/updateuser/${username}`,
                 { fullname, email, password }
             );
 
