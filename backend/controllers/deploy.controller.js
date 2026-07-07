@@ -12,6 +12,20 @@ export const deployProject = async (req, res) => {
         const kafkaBroker = process.env.KAFKA_BROKER || 'kafka-1:19092';
         const buildServerImage = process.env.BUILD_SERVER_IMAGE || 'vortex-build-server:latest';
         const containerName = `${deploymentId}`;
+
+        // Ensure build-server image exists on the host
+        try {
+            execSync(`docker image inspect ${buildServerImage}`);
+        } catch (inspectError) {
+            console.log(`[Vortex Deploy] Image ${buildServerImage} not found. Building it automatically from /home/ubuntu/vortex/build-server...`);
+            try {
+                execSync(`docker build -t ${buildServerImage} /home/ubuntu/vortex/build-server`);
+                console.log(`[Vortex Deploy] Image ${buildServerImage} built successfully.`);
+            } catch (buildError) {
+                console.error(`[Vortex Deploy] Failed to build image ${buildServerImage}:`, buildError);
+                return res.status(500).json({ error: 'Failed to build required builder image on host' });
+            }
+        }
         try {
             execSync(`docker inspect ${containerName}`);
             execSync(`docker rm -f ${containerName}`);
