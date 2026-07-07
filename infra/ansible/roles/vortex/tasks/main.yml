@@ -1,0 +1,13 @@
+---
+- name: Run Repository Deployment Tasks
+  ansible.builtin.include_tasks: repository.yml
+
+- name: Run Environment Configuration Tasks
+  ansible.builtin.include_tasks: env.yml
+
+- name: Run Docker Deployment Tasks
+  ansible.builtin.include_tasks: deploy.yml
+
+- name: Run Health Verification Tasks
+  ansible.builtin.include_tasks: health.yml
+...

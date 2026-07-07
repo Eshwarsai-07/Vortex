@@ -1,0 +1,7 @@
+---
+- name: Deploy Vortex Application Suite
+  hosts: vortex_hosts
+  become: true
+  roles:
+    - vortex
+...
