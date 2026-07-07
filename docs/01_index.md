@@ -50,5 +50,9 @@ flowchart TD
    ](06_service_orchestration_.md)
 7. [Persistent Data Storage
    ](07_persistent_data_storage_.md)
+8. [System Architecture & Topology
+   ](08_architecture.md)
+9. [Infrastructure as Code & Continuous Deployment
+   ](09_infrastructure_as_code_and_continuous_deployment.md)
 
 ---

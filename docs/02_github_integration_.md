@@ -246,8 +246,8 @@ In this chapter, we've unlocked the power of **GitHub Integration** in Vortex. Y
 
 Now that Vortex knows who you are and where to find your code, the next exciting step is to actually build and deploy that code!
 
-[Next Chapter: Project Deployment Lifecycle](03_project_deployment_lifecycle.md)
+[Next Chapter: Project Deployment Lifecycle](03_project_deployment_lifecycle_.md)
 
 ---
 
-<sub><sup>**References**: [[1]](https://github.com/rohithr018/Vortex/blob/a4e90cde639281d2a87d34304364bab9c7af8969/backend/controllers/git.controller.js), [[2]](https://github.com/rohithr018/Vortex/blob/a4e90cde639281d2a87d34304364bab9c7af8969/backend/middlewares/github.middleware.js), [[3]](https://github.com/rohithr018/Vortex/blob/a4e90cde639281d2a87d34304364bab9c7af8969/backend/routes/git.routes.js), [[4]](https://github.com/rohithr018/Vortex/blob/a4e90cde639281d2a87d34304364bab9c7af8969/frontend/src/pages/Deploy.jsx), [[5]](https://github.com/rohithr018/Vortex/blob/a4e90cde639281d2a87d34304364bab9c7af8969/frontend/src/pages/Home.jsx)</sup></sub>
+
