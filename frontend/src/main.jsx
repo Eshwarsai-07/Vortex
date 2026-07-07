@@ -6,9 +6,6 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './redux/store';
 import AutoLogout from './components/AutoLogout.jsx';
-if (import.meta.env.VITE_API_URL) {
-  axios.defaults.baseURL = import.meta.env.VITE_API_URL;
-}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
