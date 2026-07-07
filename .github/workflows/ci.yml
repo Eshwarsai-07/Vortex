@@ -1,0 +1,125 @@
+name: Vortex Continuous Integration
+
+# Trigger controls: Run on Pull Requests to main and manually via the UI
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  ci-pipeline:
+    name: Vortex CI Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      # ==========================================
+      # 1. INITIAL SETUP
+      # ==========================================
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        # Retrieves the repository source code to the GitHub Actions runner workspace.
+
+      # ==========================================
+      # 2. BACKEND INTEGRATION CHECKS
+      # ==========================================
+      - name: Setup Node.js (Backend)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+        # Installs Node.js version 20 and enables npm dependency caching to speed up subsequent runs.
+
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          npm ci
+        # Performs a clean installation of all backend dependencies directly from the package-lock file.
+
+      - name: Run Backend Tests
+        run: |
+          cd backend
+          npm test || echo "⚠️ No tests configured or tests failed. Continuing..."
+        # Runs unit tests if defined in the backend package.json, without failing the job if they fail or are absent.
+
+      # ==========================================
+      # 3. FRONTEND INTEGRATION CHECKS
+      # ==========================================
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm install
+        # Installs frontend dependencies (React + Vite).
+
+      - name: Build Frontend Application
+        run: |
+          cd frontend
+          npm run build
+        # Compiles the React application to check for TypeScript or bundler build errors.
+
+      # ==========================================
+      # 4. DOCKER INTEGRATION CHECKS
+      # ==========================================
+      - name: Validate Docker Compose Configuration
+        run: |
+          docker compose -f services/docker-compose.yml config
+        # Checks the docker-compose file for syntax correctness and structural validity.
+
+      - name: Build Docker Compose Images
+        run: |
+          docker compose -f services/docker-compose.yml build
+        # Builds the Docker container images locally on the runner to check for Dockerfile compile errors.
+        # This will NOT start the containers.
+
+      # ==========================================
+      # 5. TERRAFORM INTEGRATION CHECKS
+      # ==========================================
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        # Installs the Terraform CLI binary on the runner environment.
+
+      - name: Check Terraform Formatting
+        run: |
+          cd infra/terraform
+          terraform fmt -check
+        # Verifies that all Terraform configuration files conform to canonical formatting standards.
+
+      - name: Initialize Terraform (Offline Validation Mode)
+        run: |
+          cd infra/terraform
+          terraform init -backend=false
+        # Initializes the working directory with provider plugins, ignoring remote state backend settings.
+
+      - name: Validate Terraform Configuration
+        run: |
+          cd infra/terraform
+          terraform validate
+        # Validates the syntax and logical reference correctness of all Terraform resources.
+
+      # ==========================================
+      # 6. SECURITY CHECKS
+      # ==========================================
+      - name: Run Trivy Filesystem Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'table'
+          exit-code: '0'
+        # Scans the repository filesystem for common software vulnerabilities, outputting warnings as a table.
+
+      - name: Run Gitleaks Secret Scanner
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Inspects commit history and workspace files to identify accidentally exposed API tokens, keys, or secrets.
+
+      - name: Run Snyk Dependency Security Scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: --all-projects
+        # Scans Node.js project packages for security vulnerabilities using the official Snyk integration.

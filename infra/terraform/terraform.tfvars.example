@@ -1,0 +1,45 @@
+# ==============================================================================
+# Vortex Infrastructure Variables Configuration
+# Copy this file to 'terraform.tfvars' and supply your custom values.
+# ==============================================================================
+
+# --- AWS Provider Configuration ---
+# The target AWS region where all infrastructure components will be provisioned
+aws_region = "ap-south-1"
+
+# --- General Project Tagging ---
+# Prefix applied to resource names for easy identification and filtering
+project_name = "vortex"
+
+# Environment deployment stage (e.g., development, staging, production)
+environment = "production"
+
+# --- Compute Configuration ---
+# Name of an existing EC2 Key Pair created in your AWS Console for SSH authentication
+key_name = "vortex-keypair"
+
+# EC2 compute size. Note that Vortex runs MongoDB, ClickHouse, Redpanda, and
+# Kafka in containers on a single host. A minimum of t3.medium is recommended.
+instance_type = "t3.medium"
+
+# Optionally override the dynamic Ubuntu 24.04 AMI (leave null to use latest)
+# ami_id = "ami-xxxxxx"
+
+# --- Networking CIDRs ---
+# VPC CIDR block range
+vpc_cidr = "10.0.0.0/16"
+
+# Public Subnet range (must fit inside the VPC CIDR block)
+subnet_cidr = "10.0.1.0/24"
+
+# --- Security & IP Ingress Restrictions ---
+# Restrict SSH (port 22) access to your specific public IP for security (highly recommended)
+# Example: allowed_ssh_cidr = "203.0.113.50/32"
+allowed_ssh_cidr = "0.0.0.0/0"
+
+# CIDR allowed to connect to HTTP/HTTPS web servers (Nginx proxy)
+allowed_http_cidr = "0.0.0.0/0"
+
+# CIDR allowed to directly connect to MongoDB, ClickHouse, and Kafka ports
+# Example: allowed_app_ports_cidr = "192.168.1.0/24"
+allowed_app_ports_cidr = "0.0.0.0/0"

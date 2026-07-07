@@ -6,6 +6,7 @@ services:
       - "19092:19092"
     environment:
       KAFKA_NODE_ID: 1
+      KAFKA_HEAP_OPTS: "-Xmx256M -Xms128M"
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_LISTENERS: "CONTROLLER://0.0.0.0:9093,PLAINTEXT://0.0.0.0:19092"
       KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka-1:19092"
@@ -31,6 +32,7 @@ services:
       - "29092:19092"
     environment:
       KAFKA_NODE_ID: 2
+      KAFKA_HEAP_OPTS: "-Xmx256M -Xms128M"
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_LISTENERS: "CONTROLLER://0.0.0.0:9093,PLAINTEXT://0.0.0.0:19092"
       KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka-2:19092"
@@ -56,6 +58,7 @@ services:
       - "39092:19092"
     environment:
       KAFKA_NODE_ID: 3
+      KAFKA_HEAP_OPTS: "-Xmx256M -Xms128M"
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_LISTENERS: "CONTROLLER://0.0.0.0:9093,PLAINTEXT://0.0.0.0:19092"
       KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka-3:19092"
